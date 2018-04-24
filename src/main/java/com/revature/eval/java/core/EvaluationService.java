@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class EvaluationService {
 
-	/**aa
+	/**
 	 * 1. Without using the StringBuilder or StringBuffer class, write a method that
 	 * reverses a String. Example: reverse("example"); -> "elpmaxe"
 	 * 
@@ -31,7 +31,18 @@ public class EvaluationService {
 	 */
 	public String acronym(String phrase) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String result = "";
+		if(phrase.length() == 0) return result;
+		if(phrase.charAt(0) != ' ' && phrase.charAt(0) != '-' && phrase.charAt(0) != '_') {
+			result += phrase.charAt(0);
+		}
+		
+		for (int i = 0; i < phrase.length()-1; i++) {
+			if(phrase.charAt(i) == ' ' || phrase.charAt(i) == '-' || phrase.charAt(i) == '_') {
+				result += phrase.charAt(i+1);
+			}
+		}
+		return result;
 	}
 
 	/**
