@@ -124,6 +124,12 @@ public class EvaluationServiceTest {
 		EvaluationService.Triangle triangle = new EvaluationService.Triangle(0.5, 0.4, 0.6);
 		assertTrue(triangle.isScalene());
 	}
+	
+	@Test
+	public void equilateralTrianglesAreAlsoIscesoles() {
+		EvaluationService.Triangle triangle = new EvaluationService.Triangle(0.5, 0.5, 0.5);
+		assertTrue(triangle.isIsosceles());
+	}
 
 	/*******************************************************************
 	 * Question 4
@@ -172,6 +178,27 @@ public class EvaluationServiceTest {
 
 	@Test
 	public void cleansNumbersWithMultipleSpaces() {
+		final String expectedNumber = "2234567890";
+		final String actualNumber = evaluationService.cleanPhoneNumber("1 223 456   7890   ");
+		assertEquals(expectedNumber, actualNumber);
+	}
+	
+	@Test
+	public void cleansTheNumberPlus1() {
+		final String expectedNumber = "2234567890";
+		final String actualNumber = evaluationService.cleanPhoneNumber("+1 (223) 456-7890");
+		assertEquals(expectedNumber, actualNumber);
+	}
+
+	@Test
+	public void cleansNumbersWithDotsPlus1() {
+		final String expectedNumber = "2234567890";
+		final String actualNumber = evaluationService.cleanPhoneNumber("1.223.456.7890");
+		assertEquals(expectedNumber, actualNumber);
+	}
+
+	@Test
+	public void cleansNumbersWithMultipleSpacesPlus1() {
 		final String expectedNumber = "2234567890";
 		final String actualNumber = evaluationService.cleanPhoneNumber("223 456   7890   ");
 		assertEquals(expectedNumber, actualNumber);

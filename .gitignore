@@ -21,6 +21,9 @@
 **/Servers
 **/.springBeans
 
+#VS-Code
+**/.vscode/
+
 #IDEA
 **/.idea/
 **/*.iml

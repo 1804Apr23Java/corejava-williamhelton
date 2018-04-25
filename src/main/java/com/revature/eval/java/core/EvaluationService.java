@@ -1,8 +1,10 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EvaluationService {
 
@@ -12,6 +14,11 @@ public class EvaluationService {
 	 * 
 	 * @param string
 	 * @return
+	 */
+	
+	/*
+	 * William's notes:
+	 * This solution was given.
 	 */
 	public String reverse(String string) {
 		char[] reversed = new char[string.length()];
@@ -29,8 +36,14 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
+	
+	/*
+	 * William's notes:
+	 * Initialize an empty result String and add valid characters when they are found.
+	 * Currently the method assumes anything after a ' ', '-' or '_' is a new word for the acronym.
+	 * This method is currently not equipped to handle double spaces '  ', '-_', etc.
+	 */
 	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
 		String result = "";
 		if(phrase.length() == 0) return result;
 		if(phrase.charAt(0) != ' ' && phrase.charAt(0) != '-' && phrase.charAt(0) != '_') {
@@ -42,7 +55,7 @@ public class EvaluationService {
 				result += phrase.charAt(i+1);
 			}
 		}
-		return result;
+		return result.toUpperCase();
 	}
 
 	/**
@@ -53,6 +66,13 @@ public class EvaluationService {
 	 * exercise we'll say at least two.) A scalene triangle has all sides of
 	 * different lengths.
 	 *
+	 */
+	
+	/*
+	 * William's notes:
+	 * Create a new method to insert all triangle sides into a Set, and then evaluate the set size.
+	 * Set size should always be 1, 2 or 3.  Each value has one corresponding valid triangle type,
+	 * except for Isosceles (which also considers Equilateral triangles as Isosceles).
 	 */
 	static class Triangle {
 		private double sideOne;
@@ -95,18 +115,32 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
+			if(getNumberOfUniqueSides() == 1) {
+				return true;
+			}
 			return false;
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
+			if(getNumberOfUniqueSides() <= 2) {
+				return true;
+			}
 			return false;
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
+			if(getNumberOfUniqueSides() == 3) {
+				return true;
+			}
 			return false;
+		}
+		
+		private int getNumberOfUniqueSides() {
+			Set<Double> triangleSides = new HashSet<>();
+			triangleSides.add(sideOne);
+			triangleSides.add(sideTwo);
+			triangleSides.add(sideThree);
+			return triangleSides.size();
 		}
 
 	}
@@ -162,9 +196,31 @@ public class EvaluationService {
 	 * Note: As this exercise only deals with telephone numbers used in
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
+	
+	/*
+	 * William's notes:
+	 * Initialize an empty result string to hold all digits.
+	 * Strip the digits from the original string.
+	 * If there is exactly one country code extra in the result string, strip it.
+	 * If the result string is the wrong length, throw an error.
+	 * This method is quite generous with extra invalid characters, it only cares that the digits create a valid number.
+	 */
 	public String cleanPhoneNumber(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String result = "";
+		for (int i = string.length()-1; i >= 0; i--){
+			if(Character.isDigit(string.charAt(i))){
+				result = string.charAt(i) + result;
+			}
+		}
+
+		if(result.length() == 11 && result.charAt(0) == '1') {
+			result = result.substring(1);
+		}
+		if(result.length() != 10){
+			throw new IllegalArgumentException();
+		}
+		return result;
 	}
 
 	/**
