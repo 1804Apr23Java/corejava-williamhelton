@@ -544,7 +544,20 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
+		Set<Character> letterTotal = new HashSet<>();
+		char[] stringLetters = string.toCharArray();
+		for (char c : stringLetters) {
+			c = Character.toUpperCase(c);
+			if(validateCharacter(c))
+				letterTotal.add(c);
+		}
+		
+		if(letterTotal.size() == 26) return true;
+		return false;
+	}
+	
+	public boolean validateCharacter(char c) {
+		if((int) c >= 65 && (int) c <= 90) return true;
 		return false;
 	}
 
