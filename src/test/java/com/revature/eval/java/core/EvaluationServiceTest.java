@@ -126,7 +126,7 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void equilateralTrianglesAreAlsoIscesoles() {
+	public void equilateralTrianglesAreAlsoIsosceles() {
 		EvaluationService.Triangle triangle = new EvaluationService.Triangle(0.5, 0.5, 0.5);
 		assertTrue(triangle.isIsosceles());
 	}
@@ -179,7 +179,7 @@ public class EvaluationServiceTest {
 	@Test
 	public void cleansNumbersWithMultipleSpaces() {
 		final String expectedNumber = "2234567890";
-		final String actualNumber = evaluationService.cleanPhoneNumber("1 223 456   7890   ");
+		final String actualNumber = evaluationService.cleanPhoneNumber("223 456   7890   ");
 		assertEquals(expectedNumber, actualNumber);
 	}
 	
@@ -200,7 +200,7 @@ public class EvaluationServiceTest {
 	@Test
 	public void cleansNumbersWithMultipleSpacesPlus1() {
 		final String expectedNumber = "2234567890";
-		final String actualNumber = evaluationService.cleanPhoneNumber("223 456   7890   ");
+		final String actualNumber = evaluationService.cleanPhoneNumber("1 223 456   7890   ");
 		assertEquals(expectedNumber, actualNumber);
 	}
 

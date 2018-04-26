@@ -161,8 +161,52 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		int result = 0;
+		char[] word = string.toCharArray();
+		for (char c : word){
+			result += getScrabbleLetterScore(c);
+		}
+		return result;
+	}
+	
+	public int getScrabbleLetterScore(char c) {
+		c = Character.toUpperCase(c);
+		switch(c) {
+			case 'A':
+			case 'E':
+			case 'I':
+			case 'O':
+			case 'U':
+			case 'L':
+			case 'N':
+			case 'R':
+			case 'S':
+			case 'T':
+				return 1;
+			case 'D':
+			case 'G':
+				return 2;
+			case 'B':
+			case 'C':
+			case 'M':
+			case 'P':
+				return 3;
+			case 'F':
+			case 'H':
+			case 'V':
+			case 'W':
+			case 'Y':
+				return 4;
+			case 'K':
+				return 5;
+			case 'J':
+			case 'X':
+				return 8;
+			case 'Q':
+			case 'Z':
+				return 10;
+		}
+		return -1;
 	}
 
 	/**
@@ -200,7 +244,7 @@ public class EvaluationService {
 	/*
 	 * William's notes:
 	 * Initialize an empty result string to hold all digits.
-	 * Strip the digits from the original string.
+	 * Retrieve only the digit characters from the original string.
 	 * If there is exactly one country code extra in the result string, strip it.
 	 * If the result string is the wrong length, throw an error.
 	 * This method is quite generous with extra invalid characters, it only cares that the digits create a valid number.
