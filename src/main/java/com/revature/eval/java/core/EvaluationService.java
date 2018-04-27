@@ -1,9 +1,11 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -163,11 +165,12 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
 	/*
 	 * William's Notes:
 	 * Change the string into a char array and iterate through it.
 	 * Call method getScrabbleLetterScore which simply looks through a
-	 * switch statement and returns the appropriate value.
+	 * switch statement and returns the appropriate value for each char.
 	 */
 	public int getScrabbleScore(String string) {
 		int result = 0;
@@ -380,6 +383,7 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
 	/*
 	 * William's Notes:
 	 * Split all words by spaces into a word array.  Iterate through each word
@@ -462,6 +466,7 @@ public class EvaluationService {
 	 * @param input
 	 * @return
 	 */
+	
 	/*
 	 * William's Notes:
 	 * Break the input integer into a character array (to find digits easily).
@@ -523,6 +528,15 @@ public class EvaluationService {
 	 * gur ynml qbt. ROT13 Gur dhvpx oebja sbk whzcf bire gur ynml qbt. gives The
 	 * quick brown fox jumps over the lazy dog.
 	 */
+	
+	/*
+	 * William's Notes:
+	 * This method analyzes each character of the String and builds a result String.  
+	 * If the char is not a letter, it copies the character directly.  If it is an 
+	 * uppercase or a lowercase letter, it adjusts the ASCII value of the character by the 
+	 * value of the key, makes a check to see if the value wrapped around the alphabet, 
+	 * and returns the ciphered character.
+	 */
 	static class RotationalCipher {
 		private int key;
 
@@ -532,8 +546,31 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			StringBuilder result = new StringBuilder();
+			char[] charsToCipher = string.toCharArray();
+			for(char c : charsToCipher) {
+				c = cipherOneCharacter(c);
+				result.append(c);
+			}
+			return result.toString();
+		}
+		
+		private char cipherOneCharacter(char c) {
+			if((int)c >= 65 && (int)c <= 90) {
+				c = (char)(c + key);
+				if(c > 90) {
+					return (char)(c - 26);
+				}
+				return c;
+			} else if((int)c >= 97 && (int)c <= 122) {
+				c = (char)(c + key);
+				if(c > 122) {
+					return (char)(c - 26);
+				}
+				return c;
+			} else {
+				return c;
+			}
 		}
 
 	}
@@ -578,19 +615,44 @@ public class EvaluationService {
 	 * rxpyi ldmul cqfnk hlevi gsvoz abwlt gives thequickbrownfoxjumpsoverthelazydog
 	 *
 	 */
+	
+	/*
+	 * William's Notes:
+	 * Encoding and decoding is largely similar, the only difference is the treatment of spaces.
+	 * Therefore "ciphering" the string is placed in its own method cipherString(), and 
+	 * encode and decode merely run cipherString() and treat the returned String with appropriate
+	 * spaces.
+	 * 
+	 * Ciphering the string itself follows the following rules: if a letter, then cipher it,
+	 * if a digit, then print it, if anything else, skip it.
+	 */
 	static class AtbashCipher {
 
-		public static char encodeSingleChar(char c){
-			int i = (int)c - 97;
-			return (char)(122-i);
+		public static char cipherSingleChar(char c){
+			return (char)(122-((int)c-97));
 		}
 		
 		public static String spacifyString(String s) {
-			for(int i = 5; i < s.length(); i+=5) {
+			for(int i = 5; i < s.length(); i+=6) {
 				s = s.substring(0,  i) + " " + s.substring(i);
-				i++;
 			}
 			return s;
+		}
+		
+		public static String cipherString(String string) {
+			char[] charsToCipher = string.toCharArray();
+			StringBuilder resultBuilder = new StringBuilder();
+			
+			for(char c : charsToCipher) {
+				if(((int)c >= 65 && (int)c <= 90) || ((int)c >= 97 && (int)c <= 122)) {
+					resultBuilder.append(cipherSingleChar(Character.toLowerCase(c)));
+				} else if((int)c >= 48 && (int)c <= 57) {
+					resultBuilder.append(c);
+				} else {
+					continue;
+				}				
+			}
+			return resultBuilder.toString();
 		}
 		
 		/**
@@ -600,27 +662,9 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
-			char[] charsToEncode = string.toCharArray();
-			StringBuilder resultBuilder = new StringBuilder();
 			
-			//NEEDS MORE RULES
-			//If letter, run methods
-			//If non-letter, just append it
+			return spacifyString(cipherString(string));
 			
-			for(char c : charsToEncode) {
-				//if c is a letter then cipher, else if c is a digit then print, else do not print
-				if(((int)c >= 65 && (int)c <= 90) || ((int)c >= 97 && (int)c <= 122)) {
-					if((int)c == 32) 
-						continue;
-					resultBuilder.append(encodeSingleChar(Character.toLowerCase(c)));
-				} else if((int)c >= 48 && (int)c <= 57) {
-					resultBuilder.append(c);
-				} else {
-					continue;
-				}
-				
-			}
-			return spacifyString(resultBuilder.toString());
 		}
 
 		/**
@@ -630,8 +674,9 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			
+			return cipherString(string).replaceAll(" ", "");
+			
 		}
 	}
 
@@ -675,6 +720,11 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
+	/*
+	 * This method iterates through the characters and stores them in a Set.
+	 * If the Set size is the alphabet size, the string is a pangram.
+	 */
 	public boolean isPangram(String string) {
 		Set<Character> letterTotal = new HashSet<>();
 		char[] stringLetters = string.toCharArray();
@@ -684,13 +734,11 @@ public class EvaluationService {
 				letterTotal.add(c);
 		}
 		
-		if(letterTotal.size() == 26) return true;
-		return false;
+		return (letterTotal.size() == 26);
 	}
 	
 	public boolean validateCharacter(char c) {
-		if((int) c >= 65 && (int) c <= 90) return true;
-		return false;
+		return ((int) c >= 65 && (int) c <= 90);
 	}
 
 	/**
@@ -719,9 +767,34 @@ public class EvaluationService {
 	 * @param set
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * First, iterate through each set integer, stopping to check every multiple
+	 * of that value until that value exceeds i.  Once the entire set has been
+	 * assessed and the results saved in a Set, iterate through the Set and add
+	 * the values.
+	 * 
+	 * The use of an Iterator here is 100% gratuitous and silly.  I just did it
+	 * because I've never used an Iterator in Java before (except for JDBC) and
+	 * wanted to try it out.
+	 */
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		Set<Integer> results = new HashSet<>();
+		for(int setValue : set) {
+			for(int checker = setValue; checker < i; checker += setValue) {
+				results.add(checker);
+			}
+		}
+		int total = 0;
+//		for(int valid : results) {
+//			total += valid;
+//		}
+		Iterator<Integer> iter = results.iterator();
+		while(iter.hasNext()) {
+			total += iter.next();
+		}
+		return total;
 	}
 
 	/**
@@ -792,9 +865,37 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * First, strip the useless words out of the string and return a List of three useful words
+	 * (first number, operation, second number).  Process these useful words by turning the numbers
+	 * into integers and then performing the operation on them.
+	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		List<String> usefulWords = getUsefulWords(string);
+		return calculateResult(usefulWords);
 	}
-
+	
+	private List<String> getUsefulWords(String string) {
+		string = string.substring(8, string.length()-1);
+		List<String> result = new ArrayList<String>(Arrays.asList(string.split(" ")));
+		
+		if(result.size() == 4)
+			result.remove(2);
+		
+		return result;
+	}
+	
+	private int calculateResult(List<String> args) {
+		int num1 = Integer.parseInt(args.get(0));
+		int num2 = Integer.parseInt(args.get(2));
+		if(args.get(1).equals("plus")) 
+			return num1 + num2;
+		if(args.get(1).equals("minus"))
+			return num1 - num2;
+		if(args.get(1).equals("multiplied"))
+			return num1 * num2;
+		return num1 / num2;		
+	}
 }
