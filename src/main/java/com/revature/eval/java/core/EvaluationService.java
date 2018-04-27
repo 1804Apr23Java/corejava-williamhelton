@@ -1,7 +1,10 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -160,6 +163,12 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	/*
+	 * William's Notes:
+	 * Change the string into a char array and iterate through it.
+	 * Call method getScrabbleLetterScore which simply looks through a
+	 * switch statement and returns the appropriate value.
+	 */
 	public int getScrabbleScore(String string) {
 		int result = 0;
 		char[] word = string.toCharArray();
@@ -247,7 +256,8 @@ public class EvaluationService {
 	 * Retrieve only the digit characters from the original string.
 	 * If there is exactly one country code extra in the result string, strip it.
 	 * If the result string is the wrong length, throw an error.
-	 * This method is quite generous with extra invalid characters, it only cares that the digits create a valid number.
+	 * This method is quite generous with extra invalid characters, it only cares that 
+	 * the digits create a valid number.
 	 */
 	public String cleanPhoneNumber(String string) {
 		// TODO Write an implementation for this method declaration
@@ -276,9 +286,23 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	/*
+	 * STILL NEEDS REGULAR EXPRESSION
+	 * ONLY SPLITS ON SPACE
+	 * NEEDS TO SPLIT ON ALL KINDS OF STUFF
+	 */
 	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] words = string.split(" ");
+		Map<String, Integer> wordCountMap = new HashMap<>();
+		for(String word : words) {
+			if(!wordCountMap.containsKey(word)) {
+				wordCountMap.put(word, 1);
+			} else {
+				int oldWordCount = wordCountMap.get(word);
+				wordCountMap.put(word, ++oldWordCount);
+			}
+		}
+		return wordCountMap;
 	}
 
 	/**
@@ -356,9 +380,71 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	/*
+	 * William's Notes:
+	 * Split all words by spaces into a word array.  Iterate through each word
+	 * and send them to custom method pigLatinizeOneWord, which uses custom methods
+	 * to determine if the word starts with a trigraph, digraph or vowel, then returns
+	 * the appropriate String with rules applied.
+	 */
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] words = string.split(" ");
+		String result = "";
+		for (String word : words) {
+			//if this is the first word
+			if(result.equals("")) {
+				result = pigLatinizeOneWord(word);
+				continue;
+			}
+			//all other words except first
+			result = result + " " + pigLatinizeOneWord(word);
+		}
+		return result;
+	}
+	
+	public String pigLatinizeOneWord(String word) {
+		if(word.length() >= 3 && isTrigraph(word.substring(0,  3))) {
+			return word.substring(3) + word.substring(0, 3) + "ay";
+		} 
+		if(word.length() >= 2 && isDigraph(word.substring(0, 2))) {
+			return word.substring(2) + word.substring(0, 2) + "ay";
+		}
+		if(isVowel(word.charAt(0))) {
+			return word + "ay";
+		} 
+		return word.substring(1) + word.charAt(0) + "ay";
+	}
+	
+	public boolean isVowel(char c) {
+		c = Character.toUpperCase(c);
+		switch((int) c) {
+			case 65:
+			case 69:
+			case 73:
+			case 79:
+			case 85:
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isTrigraph(String chars) {
+		List<String> validTrigraphs = Arrays.asList(
+			"nth", "sch", "scr", "shr", "spl", "spr", "squ", "str", "thr"
+			);
+		if(validTrigraphs.contains(chars)) return true;
+		return false;
+	}
+	
+	public boolean isDigraph(String chars) {
+		List<String> validDigraphs = Arrays.asList(
+			"bl", "br", "ch", "ck", "cl", "cr", "dr", "fl", "fr", 
+			"gh", "gl", "gr", "ng", "ph", "pl", "pr", "qu", "sc", 
+			"sh", "sk", "sl", "sm", "sn", "sp", "st", "sw", "th", 
+			"tr", "tw", "wh", "wr"
+			);
+		if(validDigraphs.contains(chars)) return true;
+		return false;
 	}
 
 	/**
@@ -376,9 +462,24 @@ public class EvaluationService {
 	 * @param input
 	 * @return
 	 */
+	/*
+	 * William's Notes:
+	 * Break the input integer into a character array (to find digits easily).
+	 * Count the array size to get number of digits, then iterate through the array
+	 * and raise each digit to the power of the total digits and keep the result total.
+	 * Compare the final result total to the original input; if they match
+	 * the method will return true.
+	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		char[] charifiedDigits = String.valueOf(input).toCharArray();
+		int numberOfDigits = charifiedDigits.length;
+		int sumResult = 0;
+		
+		for(char i : charifiedDigits) {
+			sumResult += Math.pow(Character.getNumericValue(i), numberOfDigits);
+		}
+		
+		return (input == sumResult);
 	}
 
 	/**
@@ -450,7 +551,6 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
 		return 0;
 	}
 
@@ -480,6 +580,19 @@ public class EvaluationService {
 	 */
 	static class AtbashCipher {
 
+		public static char encodeSingleChar(char c){
+			int i = (int)c - 97;
+			return (char)(122-i);
+		}
+		
+		public static String spacifyString(String s) {
+			for(int i = 5; i < s.length(); i+=5) {
+				s = s.substring(0,  i) + " " + s.substring(i);
+				i++;
+			}
+			return s;
+		}
+		
 		/**
 		 * Question 13
 		 * 
@@ -487,8 +600,27 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			char[] charsToEncode = string.toCharArray();
+			StringBuilder resultBuilder = new StringBuilder();
+			
+			//NEEDS MORE RULES
+			//If letter, run methods
+			//If non-letter, just append it
+			
+			for(char c : charsToEncode) {
+				//if c is a letter then cipher, else if c is a digit then print, else do not print
+				if(((int)c >= 65 && (int)c <= 90) || ((int)c >= 97 && (int)c <= 122)) {
+					if((int)c == 32) 
+						continue;
+					resultBuilder.append(encodeSingleChar(Character.toLowerCase(c)));
+				} else if((int)c >= 48 && (int)c <= 57) {
+					resultBuilder.append(c);
+				} else {
+					continue;
+				}
+				
+			}
+			return spacifyString(resultBuilder.toString());
 		}
 
 		/**
