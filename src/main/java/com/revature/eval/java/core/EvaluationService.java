@@ -263,7 +263,6 @@ public class EvaluationService {
 	 * the digits create a valid number.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
 		String result = "";
 		for (int i = string.length()-1; i >= 0; i--){
 			if(Character.isDigit(string.charAt(i))){
@@ -497,9 +496,52 @@ public class EvaluationService {
 	 * @param l
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * Get a List of all possible prime factors with a custom method.  Iterate through this List
+	 * and check if the values divide evenly into the long value.  If it does, add the factor to the 
+	 * List of found factors, replace the value of l and repeat the process until all factors are prime.
+	 * 
+	 * This one was frustrating and I went down a few bad rabbit holes.  I'm still not too happy with it.
+	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		List<Long> possibleFactors = getAllPrimesUnderN((long) Math.ceil(Math.sqrt(l)));
+		List<Long> foundFactors = new ArrayList<>();
+		System.out.println("possibleFactors " + possibleFactors);
+		for(int i = 0; i < possibleFactors.size() ;) {
+			if(l % possibleFactors.get(i) == 0) {
+				foundFactors.add(possibleFactors.get(i));
+				l /= possibleFactors.get(i);
+				continue;
+			} else {
+				i++;
+			}
+		}
+		return foundFactors;
+	}
+	
+	public List<Long> getAllPrimesUnderN(long l){
+		List<Long> primes = new ArrayList<>();
+		if(l < 2) return primes;
+		primes.add((long) 2);		
+		
+		long checker = 3;
+		while(checker <= l) {
+			if(isPrime(checker)) {
+				primes.add(checker);
+			}
+			checker+=2;
+		}
+		return primes;
+	}
+	
+	public boolean isPrime(long l) {
+		for(int i = 2; i <= l/2; i++) {
+			if(l % i == 0)
+				return false;
+		}
+		return true;
 	}
 
 	/**
@@ -722,6 +764,7 @@ public class EvaluationService {
 	 */
 	
 	/*
+	 * William's Notes:
 	 * This method iterates through the characters and stores them in a Set.
 	 * If the Set size is the alphabet size, the string is a pangram.
 	 */
@@ -833,10 +876,54 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * First, iterate through every character of the string.  If char is a space, skip it, if char is 
+	 * a digit, add it to a List, if it's an invalid character, return false immediately.
+	 * 
+	 * Take the List of Integers and run the doubling algorithm on it.  Then iterate through the List
+	 * and save a total of the digits.  Finally check this total to see if it is divisible by 10 and
+	 * return the result.
+	 */
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
+		if(string.length() < 1) return false;
+		
+		//validate and clean string
+		List<Integer> cleanNumbers = new ArrayList<Integer>();
+		for(char c : string.toCharArray()) {
+			if(c == ' ') {
+				continue;
+			} else if(Character.isDigit(c)) {
+				cleanNumbers.add(Character.getNumericValue(c));
+			} else {
+				return false;
+			}
+		}
+		
+		doubleEverySecondDigitFromRight(cleanNumbers);
+				
+		int totalOfAllDigits = 0;
+		
+		for(int i : cleanNumbers) {
+			totalOfAllDigits += i;
+		}
+		
+		if(totalOfAllDigits % 10 == 0) {
+			return true;
+		}		
 		return false;
 	}
+	
+	private void doubleEverySecondDigitFromRight(List<Integer> numberList) {
+		for(int i = numberList.size()-2; i >= 0; i-=2) {
+			numberList.set(i, numberList.get(i)*2);
+			if(numberList.get(i) > 9) {
+				numberList.set(i, numberList.get(i)-9);
+			}
+		}
+	}
+	
 
 	/**
 	 * 20. Parse and evaluate simple math word problems returning the answer as an
