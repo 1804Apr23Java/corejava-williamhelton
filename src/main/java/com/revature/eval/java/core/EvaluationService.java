@@ -1,12 +1,15 @@
 package com.revature.eval.java.core;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -508,7 +511,6 @@ public class EvaluationService {
 	public List<Long> calculatePrimeFactorsOf(long l) {
 		List<Long> possibleFactors = getAllPrimesUnderN((long) Math.ceil(Math.sqrt(l)));
 		List<Long> foundFactors = new ArrayList<>();
-		System.out.println("possibleFactors " + possibleFactors);
 		for(int i = 0; i < possibleFactors.size() ;) {
 			if(l % possibleFactors.get(i) == 0) {
 				foundFactors.add(possibleFactors.get(i));
@@ -792,9 +794,27 @@ public class EvaluationService {
 	 * @param given
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * First check the input type of the Temporal object to see if it is a LocalDate or a LocalDateTime,
+	 * and turn it into a LocalDateTime of the appropriate timestamp.  Return the new object adding 10^9
+	 * seconds.
+	 * 
+	 * I don't feel fantastic about this one, it doesn't feel very "object-oriented" to just brute check
+	 * the types.  I feel like there should be a way to operate on any Temporal object but I do not know
+	 * how.
+	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		LocalDateTime result;
+		if(given instanceof LocalDate) {
+			Instant instant = ((LocalDate) given).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+			result = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+		} else {
+			result = (LocalDateTime) given;
+		}
+
+		return result.plusSeconds(1_000_000_000);
 	}
 
 	/**
