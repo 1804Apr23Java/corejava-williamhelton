@@ -830,7 +830,7 @@ public class EvaluationService {
 		char[] stringLetters = string.toCharArray();
 		for (char c : stringLetters) {
 			if(Character.isLetter(c))
-				letterTotal.add(c);
+				letterTotal.add(Character.toLowerCase(c));
 		}
 		
 		return (letterTotal.size() == 26);
