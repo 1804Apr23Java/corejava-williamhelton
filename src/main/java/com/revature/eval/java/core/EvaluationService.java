@@ -1,19 +1,8 @@
 package com.revature.eval.java.core;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EvaluationService {
 
@@ -120,24 +109,15 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			if(getNumberOfUniqueSides() == 1) {
-				return true;
-			}
-			return false;
+			return (getNumberOfUniqueSides() == 1);
 		}
 
 		public boolean isIsosceles() {
-			if(getNumberOfUniqueSides() <= 2) {
-				return true;
-			}
-			return false;
+			return (getNumberOfUniqueSides() <= 2);
 		}
 
 		public boolean isScalene() {
-			if(getNumberOfUniqueSides() == 3) {
-				return true;
-			}
-			return false;
+			return (getNumberOfUniqueSides() == 3);
 		}
 		
 		private int getNumberOfUniqueSides() {
@@ -147,7 +127,6 @@ public class EvaluationService {
 			triangleSides.add(sideThree);
 			return triangleSides.size();
 		}
-
 	}
 
 	/**
@@ -299,8 +278,7 @@ public class EvaluationService {
 			if(!wordCountMap.containsKey(word)) {
 				wordCountMap.put(word, 1);
 			} else {
-				int oldWordCount = wordCountMap.get(word);
-				wordCountMap.put(word, ++oldWordCount);
+				wordCountMap.put(word, wordCountMap.get(word)+1);
 			}
 		}
 		return wordCountMap;
@@ -345,9 +323,11 @@ public class EvaluationService {
 	/*
 	 * William's Notes:
 	 * Use a while loop to look at the middle element and determine whether to keep searching in the
-	 * first half or the second half of the List by using Comparable values.
+	 * first half or the second half of the List by using Comparable values.  If the middle value of the
+	 * list or "sublist" ever equals the search key, return the index.  If the sublist becomes too 
+	 * small and the key is not found, return a -1 value.
 	 * 
-	 * This is a reasonably standard BST implementation.  The interesting part is extending Comparable
+	 * This is a reasonably standard binary search implementation.  The interesting part is extending Comparable
 	 * to be able to compare generics.
 	 */
 	static class BinarySearch<T extends Comparable<T>> {
@@ -366,10 +346,8 @@ public class EvaluationService {
 				if(compareValue < 0) {
 					beginning = middle+1;
 					continue;
-				}
-				if(compareValue > 0) {
-					end = middle-1;
-				}
+				}				
+				end = middle-1;
 			}
 			return -1;
 		}
@@ -386,7 +364,6 @@ public class EvaluationService {
 		public void setSortedList(List<T> sortedList) {
 			this.sortedList = sortedList;
 		}
-
 	}
 
 	/**
@@ -412,21 +389,22 @@ public class EvaluationService {
 	 * Split all words by spaces into a word array.  Iterate through each word
 	 * and send them to custom method pigLatinizeOneWord, which uses custom methods
 	 * to determine if the word starts with a trigraph, digraph or vowel, then returns
-	 * the appropriate String with rules applied.
+	 * the appropriate String with rules applied.  Add these "Pig Latinized" words
+	 * to a StringBuilder to construct the phrase.
 	 */
 	public String toPigLatin(String string) {
 		String[] words = string.split(" ");
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (String word : words) {
 			//if this is the first word
-			if(result.equals("")) {
-				result = pigLatinizeOneWord(word);
+			if(result.toString().equals("")) {
+				result.append(pigLatinizeOneWord(word));
 				continue;
 			}
 			//all other words except first
-			result = result + " " + pigLatinizeOneWord(word);
+			result.append(" " + pigLatinizeOneWord(word));
 		}
-		return result;
+		return result.toString();
 	}
 	
 	public String pigLatinizeOneWord(String word) {
@@ -459,8 +437,7 @@ public class EvaluationService {
 		List<String> validTrigraphs = Arrays.asList(
 			"nth", "sch", "scr", "shr", "spl", "spr", "squ", "str", "thr"
 			);
-		if(validTrigraphs.contains(chars)) return true;
-		return false;
+		return (validTrigraphs.contains(chars));
 	}
 	
 	public boolean isDigraph(String chars) {
@@ -470,8 +447,7 @@ public class EvaluationService {
 			"sh", "sk", "sl", "sm", "sn", "sp", "st", "sw", "th", 
 			"tr", "tw", "wh", "wr"
 			);
-		if(validDigraphs.contains(chars)) return true;
-		return false;
+		return (validDigraphs.contains(chars));
 	}
 
 	/**
@@ -523,7 +499,7 @@ public class EvaluationService {
 	
 	/*
 	 * William's Notes:
-	 * Get a List of all possible prime factors with a custom method.  Iterate through this List
+	 * Get a List of all potential prime factors with a custom method.  Iterate through this List
 	 * and check if the values divide evenly into the long value.  If it does, add the factor to the 
 	 * List of found factors, replace the value of l and repeat the process until all factors are prime.
 	 * 
@@ -536,7 +512,6 @@ public class EvaluationService {
 			if(l % possibleFactors.get(i) == 0) {
 				foundFactors.add(possibleFactors.get(i));
 				l /= possibleFactors.get(i);
-				continue;
 			} else {
 				i++;
 			}
@@ -601,6 +576,9 @@ public class EvaluationService {
 	 * uppercase or a lowercase letter, it adjusts the ASCII value of the character by the 
 	 * value of the key, makes a check to see if the value wrapped around the alphabet, 
 	 * and returns the ciphered character.
+	 * 
+	 * This could possibly be refactored to be cleaner with regular expressions, but 
+	 * ASCII values work in a pinch.
 	 */
 	static class RotationalCipher {
 		private int key;
@@ -614,10 +592,9 @@ public class EvaluationService {
 			StringBuilder result = new StringBuilder();
 			char[] charsToCipher = string.toCharArray();
 			for(char c : charsToCipher) {
-				c = cipherOneCharacter(c);
-				result.append(c);
+				result.append(cipherOneCharacter(c));
 			}
-			return result.toString();
+			return result.toString();			
 		}
 		
 		private char cipherOneCharacter(char c) {
@@ -637,7 +614,6 @@ public class EvaluationService {
 				return c;
 			}
 		}
-
 	}
 
 	/**
@@ -658,7 +634,8 @@ public class EvaluationService {
 	 * This problem uses an overloaded copy of isPrime() (from problem #10).
 	 * 
 	 * Create a Linked List and start iterating through odd numbers and performing isPrime() checks on them.
-	 * When prime numbers are found they are 
+	 * When prime numbers are found they are added to the List.  The method runs until the list reaches
+	 * the size of the input variable, then returns the last value found.
 	 */
 	public int calculateNthPrime(int i) {
 		if(i < 1) {
@@ -722,7 +699,6 @@ public class EvaluationService {
 	 * if a digit, then print it, if anything else, skip it.
 	 */
 	static class AtbashCipher {
-
 		public static char cipherSingleChar(char c){
 			return (char)(122-((int)c-97));
 		}
@@ -756,10 +732,8 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String encode(String string) {
-			
-			return spacifyString(cipherString(string));
-			
+		public static String encode(String string) {			
+			return spacifyString(cipherString(string));			
 		}
 
 		/**
@@ -768,10 +742,8 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String decode(String string) {
-			
-			return cipherString(string).replaceAll(" ", "");
-			
+		public static String decode(String string) {			
+			return cipherString(string).replaceAll(" ", "");			
 		}
 	}
 
@@ -857,16 +829,11 @@ public class EvaluationService {
 		Set<Character> letterTotal = new HashSet<>();
 		char[] stringLetters = string.toCharArray();
 		for (char c : stringLetters) {
-			c = Character.toUpperCase(c);
-			if(validateCharacter(c))
+			if(Character.isLetter(c))
 				letterTotal.add(c);
 		}
 		
 		return (letterTotal.size() == 26);
-	}
-	
-	public boolean validateCharacter(char c) {
-		return ((int) c >= 65 && (int) c <= 90);
 	}
 
 	/**
@@ -933,9 +900,7 @@ public class EvaluationService {
 			}
 		}
 		int total = 0;
-//		for(int valid : results) {
-//			total += valid;
-//		}
+
 		Iterator<Integer> iter = results.iterator();
 		while(iter.hasNext()) {
 			total += iter.next();
@@ -1012,10 +977,7 @@ public class EvaluationService {
 			totalOfAllDigits += i;
 		}
 		
-		if(totalOfAllDigits % 10 == 0) {
-			return true;
-		}		
-		return false;
+		return (totalOfAllDigits % 10 == 0);
 	}
 	
 	private void doubleEverySecondDigitFromRight(List<Integer> numberList) {
@@ -1027,7 +989,6 @@ public class EvaluationService {
 		}
 	}
 	
-
 	/**
 	 * 20. Parse and evaluate simple math word problems returning the answer as an
 	 * integer.
