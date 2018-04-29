@@ -26,7 +26,7 @@ public class EvaluationService {
 	 */
 	
 	/*
-	 * William's notes:
+	 * William's Notes:
 	 * This solution was given.
 	 */
 	public String reverse(String string) {
@@ -47,7 +47,7 @@ public class EvaluationService {
 	 */
 	
 	/*
-	 * William's notes:
+	 * William's Notes:
 	 * Use a regular expression to split the phrase into a group of words by removing
 	 * all characters that are not letters, and grouping letters together (forming a "word").
 	 * Iterate through the word array and look at the first character of each word.  Use a 
@@ -74,7 +74,7 @@ public class EvaluationService {
 	 */
 	
 	/*
-	 * William's notes:
+	 * William's Notes:
 	 * Create a new method to insert all triangle sides into a Set, and then evaluate the set size.
 	 * Set size should always be 1, 2 or 3.  Each value has one corresponding valid triangle type,
 	 * except for Isosceles (which also considers Equilateral triangles as Isosceles).
@@ -254,29 +254,23 @@ public class EvaluationService {
 	 */
 	
 	/*
-	 * William's notes:
-	 * Initialize an empty result string to hold all digits.
-	 * Retrieve only the digit characters from the original string.
+	 * William's Notes:
+	 * Use a regular expression to strip all non-digits from the input string.
 	 * If there is exactly one country code extra in the result string, strip it.
 	 * If the result string is the wrong length, throw an error.
 	 * This method is quite generous with extra invalid characters, it only cares that 
 	 * the digits create a valid number.
 	 */
 	public String cleanPhoneNumber(String string) {
-		String result = "";
-		for (int i = string.length()-1; i >= 0; i--){
-			if(Character.isDigit(string.charAt(i))){
-				result = string.charAt(i) + result;
-			}
-		}
+		string = string.replaceAll("\\D", "");
 
-		if(result.length() == 11 && result.charAt(0) == '1') {
-			result = result.substring(1);
+		if(string.length() == 11 && string.charAt(0) == '1') {
+			string = string.substring(1);
 		}
-		if(result.length() != 10){
+		if(string.length() != 10){
 			throw new IllegalArgumentException();
 		}
-		return result;
+		return string;
 	}
 
 	/**
