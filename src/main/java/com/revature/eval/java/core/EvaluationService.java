@@ -48,23 +48,19 @@ public class EvaluationService {
 	
 	/*
 	 * William's notes:
-	 * Initialize an empty result String and add valid characters when they are found.
-	 * Currently the method assumes anything after a ' ', '-' or '_' is a new word for the acronym.
-	 * This method is currently not equipped to handle double spaces '  ', '-_', etc.
+	 * Use a regular expression to split the phrase into a group of words by removing
+	 * all characters that are not letters, and grouping letters together (forming a "word").
+	 * Iterate through the word array and look at the first character of each word.  Use a 
+	 * StringBuilder to append these characters together, then return the final result
+	 * as an uppercase String.
 	 */
 	public String acronym(String phrase) {
-		String result = "";
-		if(phrase.length() == 0) return result;
-		if(phrase.charAt(0) != ' ' && phrase.charAt(0) != '-' && phrase.charAt(0) != '_') {
-			result += phrase.charAt(0);
+		String[] words = phrase.split("[^A-Za-z]+");
+		StringBuilder result = new StringBuilder();
+		for(String word : words) {
+			result.append(word.charAt(0));
 		}
-		
-		for (int i = 0; i < phrase.length()-1; i++) {
-			if(phrase.charAt(i) == ' ' || phrase.charAt(i) == '-' || phrase.charAt(i) == '_') {
-				result += phrase.charAt(i+1);
-			}
-		}
-		return result.toUpperCase();
+		return result.toString().toUpperCase();
 	}
 
 	/**
