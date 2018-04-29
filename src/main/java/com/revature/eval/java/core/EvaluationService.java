@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -345,12 +346,37 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	
+	/*
+	 * William's Notes:
+	 * Use a while loop to look at the middle element and determine whether to keep searching in the
+	 * first half or the second half of the List by using Comparable values.
+	 * 
+	 * This is a reasonably standard BST implementation.  The interesting part is extending Comparable
+	 * to be able to compare generics.
+	 */
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			int beginning = 0;
+			int end = sortedList.size();
+			
+			while(beginning < end) {
+				int middle = (beginning + end - 1)/2;
+				int compareValue = sortedList.get(middle).compareTo(t);
+				if(compareValue == 0) {
+					return middle;
+				}
+				if(compareValue < 0) {
+					beginning = middle+1;
+					continue;
+				}
+				if(compareValue > 0) {
+					end = middle-1;
+				}
+			}
+			return -1;
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -631,8 +657,38 @@ public class EvaluationService {
 	 * @param i
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * This problem uses an overloaded copy of isPrime() (from problem #10).
+	 * 
+	 * Create a Linked List and start iterating through odd numbers and performing isPrime() checks on them.
+	 * When prime numbers are found they are 
+	 */
 	public int calculateNthPrime(int i) {
-		return 0;
+		if(i < 1) {
+			throw new IllegalArgumentException();
+		}
+		
+		int checker = 3;
+		LinkedList<Integer> primes = new LinkedList<>();
+		primes.add(2);
+		
+		while(primes.size() < i) {
+			if(isPrime(checker)) {
+				primes.add(checker);
+			}
+			checker += 2;
+		}
+		return primes.getLast();
+	}
+	
+	public boolean isPrime(int input) {
+		for(int i = 2; i <= input/2; i++) {
+			if(input % i == 0)
+				return false;
+		}
+		return true;
 	}
 
 	/**
@@ -746,9 +802,41 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
+	/*
+	 * William's Notes:
+	 * A StringBuilder looks through the original string and strips out the digits,
+	 * looking for invalid characters.  Then a simple for loop looks through the 
+	 * numerical values in the StringBuilder and multiplies them appropriately to 
+	 * find the total.  The method then returns whether the total is divisible by 11.
+	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		StringBuilder resultBuilder = new StringBuilder();
+		char[] chars = string.toCharArray();
+		for(int i = 0; i < chars.length; i++) {
+			if(chars[i] == '-') {
+				continue;
+			} else if (i == chars.length-1 && string.charAt(string.length()-1) == 'X') {
+				resultBuilder.append('X');
+			} else if (!Character.isDigit(chars[i])) {
+				return false;
+			} else {
+				resultBuilder.append(chars[i]);
+			}
+		}
+		
+		if(resultBuilder.length() != 10)
+			return false;
+		
+		int total = 0;
+		for(int i = 0; i < 10; i++) {
+			if(i == 9 && resultBuilder.charAt(i) == 'X') {
+				total += 10;
+				break;
+			}
+			total += (Character.getNumericValue(resultBuilder.charAt(i)) * (10-i));
+		}
+		return (total % 11 == 0);
 	}
 
 	/**
