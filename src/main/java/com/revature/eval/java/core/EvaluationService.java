@@ -292,13 +292,18 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
 	/*
-	 * STILL NEEDS REGULAR EXPRESSION
-	 * ONLY SPLITS ON SPACE
-	 * NEEDS TO SPLIT ON ALL KINDS OF STUFF
+	 * William's Notes:
+	 * First split the original string into an array of words by using a 
+	 * regular expression that separates unbroken groups of letters (how we
+	 * arbitrarily define "words") and removes all other characters.  Then
+	 * iterate through the word array.  If the word is not found in the result
+	 * map, then add the word with a value of 1.  If the word is found, increase
+	 * the quantity by 1.
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		String[] words = string.split(" ");
+		String[] words = string.split("[^A-Za-z]+");
 		Map<String, Integer> wordCountMap = new HashMap<>();
 		for(String word : words) {
 			if(!wordCountMap.containsKey(word)) {
